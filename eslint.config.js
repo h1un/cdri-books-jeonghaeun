@@ -72,6 +72,8 @@ export default defineConfig(
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
+      // React의 `onClick={() => setOpen(false)}` 같은 화살표 축약형은 허용한다.
+      '@typescript-eslint/no-confusing-void-expression': ['error', { ignoreArrowShorthand: true }],
 
       // ── 문법 ──────────────────────────────────────
       'prefer-template': 'error',
