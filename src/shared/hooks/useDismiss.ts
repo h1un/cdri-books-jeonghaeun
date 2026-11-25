@@ -22,7 +22,9 @@ export function useDismiss(
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') handleDismiss();
+      // 안쪽 요소(예: 팝업 안의 셀렉트)가 ESC를 먼저 처리했다면 바깥 팝업까지 닫지 않는다.
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      handleDismiss();
     }
 
     document.addEventListener('pointerdown', handlePointerDown);
