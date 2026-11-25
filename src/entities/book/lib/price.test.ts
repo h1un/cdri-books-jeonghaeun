@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getDisplayPrice, hasDiscount } from './price';
+import { formatBookPrice, getDisplayPrice, hasDiscount } from './price';
 
 describe('hasDiscount', () => {
   it('할인가가 있으면 true', () => {
@@ -23,5 +23,15 @@ describe('getDisplayPrice', () => {
 
   it('둘 다 없으면 null', () => {
     expect(getDisplayPrice({ price: null, salePrice: null })).toBeNull();
+  });
+});
+
+describe('formatBookPrice', () => {
+  it('가격을 원 단위로 표시한다', () => {
+    expect(formatBookPrice(13500)).toBe('13,500원');
+  });
+
+  it('가격이 없으면 대체 문구를 보여준다', () => {
+    expect(formatBookPrice(null)).toBe('가격 정보 없음');
   });
 });
