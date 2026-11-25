@@ -172,17 +172,18 @@ if (isNearEnd && hasNextPage && !isFetchingNextPage) fetchNextPage();
 
 ```
 src/
-├─ app/          # providers, router, Layout
+├─ app/          # providers, router, Layout, RouteFallback
 ├─ pages/        # SearchPage, FavoritesPage (조립만 담당)
+├─ widgets/      # header, book-list(가상 스크롤), search-result, favorite-book-list
 ├─ features/
-│  ├─ search/    # SearchBar, SearchHistoryList, DetailSearchPopover, 검색 훅·스토어
-│  └─ favorites/ # favoriteStore, FavoriteToggle
+│  ├─ search/    # 검색창·검색 기록·상세 검색, 검색 조건(URL), useBookSearch
+│  └─ favorites/ # 찜 스토어, FavoriteToggle, FavoriteIndicator
 ├─ entities/
-│  └─ book/      # api, types, mapper, BookList, BookListItem, BookPrice
-└─ shared/       # api client, ui, hooks, lib
+│  └─ book/      # api(client 호출, dto, mapper, queryKeys), model, lib(가격·중복·표지), ui(BookListItem 등)
+└─ shared/       # api client, config, ui, hooks, lib
 ```
 
-의존 방향은 `pages → features → entities → shared` 한 방향만 허용한다.
+의존 방향은 `pages → widgets → features → entities → shared` 한 방향만 허용한다.
 
 ---
 
@@ -235,3 +236,21 @@ src/
 - type: `feat` `fix` `refactor` `perf` `style` `design` `test` `docs` `chore`
 - 흐름: 이슈 생성 → `<type>/#N-<slug>` 브랜치 → PR(`Closes #N`) → `main` 머지
 - husky: 커밋 시 lint-staged(ESLint·Prettier), 메시지는 commitlint로 검사
+
+---
+
+## 10. 구현 중 바뀌거나 추가된 판단
+
+| 항목                      | 내용                                                                                                                  | 이슈   |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------ |
+| 린터                      | Vite 템플릿 기본 oxlint 대신 ESLint 9 (커스텀 selector 규칙이 필요)                                                   | #1     |
+| TypeScript                | 7.x 대신 6.0 고정 (`typescript-eslint` 지원 범위 `< 6.1`)                                                             | #1     |
+| boolean `&&` 규칙         | `react/jsx-no-leaked-render`는 타입을 보지 않아 boolean 변수까지 막음 → 타입 기반 `strict-boolean-expressions`로 교체 | #1     |
+| 가격 정보 없음 **[판단]** | 실제 응답에 정가 0원인 책이 있어 "가격 정보 없음"으로 표시                                                            | #2, #4 |
+| 책 소개 없음 **[판단]**   | 실제 응답에 빈 소개가 있어 "책 소개가 없습니다."로 표시                                                               | #2, #4 |
+| 중복 제거                 | 페이지를 이어 붙이면 같은 책이 중복되어, 페이지를 합친 뒤 id 기준으로 제거                                            | #2, #6 |
+| widgets 레이어            | 찜 기능과 책 아이템을 조합하는 목록(`BookListRow`)을 두기 위해 추가 (`entities`가 `features`에 의존하지 않도록)       | #6     |
+| 프리페치 기준             | overscan 포함 기준이면 첫 화면에서 바로 2페이지를 요청 → 실제 보이는 범위 기준으로 변경                               | #7     |
+| Popover 트리거            | 트리거가 팝업 밖에 있으면 다시 누를 때 닫혔다 열림 → 트리거를 Popover 안에 포함                                       | #8     |
+| 펼친 표지 이미지          | 썸네일(120×174)이 흐려 원본 이미지 사용, 실패 시 썸네일로 대체. 찜 저장 데이터 v2 마이그레이션                        | #10    |
+| 지연 로딩 진입 화면       | `/favorites` 직접 진입 시 빈 화면·경고 → `HydrateFallback` 추가                                                       | #22    |
