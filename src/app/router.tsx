@@ -1,13 +1,9 @@
 import { createBrowserRouter } from 'react-router';
 
 import { Layout } from '@/app/Layout';
+import { ROUTE_PATH } from '@/app/routePath';
 import { FavoritesPage } from '@/pages/FavoritesPage';
 import { SearchPage } from '@/pages/SearchPage';
-
-export const ROUTE_PATH = {
-  search: '/',
-  favorites: '/favorites',
-} as const;
 
 export const router = createBrowserRouter([
   {
