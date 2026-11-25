@@ -13,7 +13,8 @@ type SearchResultProps = {
 };
 
 export function SearchResult({ condition }: SearchResultProps) {
-  const { data, status, refetch } = useBookSearch(condition);
+  const { data, status, refetch, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useBookSearch(condition);
 
   if (condition.query === '') {
     return (
@@ -49,7 +50,12 @@ export function SearchResult({ condition }: SearchResultProps) {
 
   return (
     <SearchResultLayout totalCount={data.totalCount}>
-      <BookList books={data.books} />
+      <BookList
+        books={data.books}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        onLoadMore={() => void fetchNextPage()}
+      />
     </SearchResultLayout>
   );
 }
