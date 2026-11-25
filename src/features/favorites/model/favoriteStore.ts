@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware';
 import { syncAcrossTabs } from '@/shared/lib/syncAcrossTabs';
 
 import {
+  migrateFavoritesV1,
   sortFavorites,
   toggleFavorite,
   type FavoriteCandidate,
@@ -29,8 +30,13 @@ export const useFavoriteStore = create<FavoriteState>()(
     }),
     {
       name: FAVORITES_STORAGE_KEY,
-      version: 1,
+      version: 2,
       partialize: (state) => ({ favoritesById: state.favoritesById }),
+      migrate: (persistedState, version) => {
+        const state = persistedState as Pick<FavoriteState, 'favoritesById'>;
+        if (version < 2) return { favoritesById: migrateFavoritesV1(state.favoritesById) };
+        return state;
+      },
     },
   ),
 );

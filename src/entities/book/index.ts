@@ -1,5 +1,6 @@
 export { bookQueryKeys } from './api/queryKeys';
 export { searchBooks } from './api/searchBooks';
+export { toCoverImageUrl } from './lib/coverImage';
 export { getNextBookPage } from './lib/pagination';
 export { formatBookPrice, getDisplayPrice, hasDiscount } from './lib/price';
 export { uniqueBooks } from './lib/uniqueBooks';
