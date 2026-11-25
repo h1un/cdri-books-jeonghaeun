@@ -1,12 +1,14 @@
 import { createBrowserRouter } from 'react-router';
 
 import { Layout } from '@/app/Layout';
+import { RouteFallback } from '@/app/RouteFallback';
 import { ROUTE_PATH } from '@/app/routePath';
 import { SearchPage } from '@/pages/SearchPage';
 
 export const router = createBrowserRouter([
   {
     element: <Layout />,
+    hydrateFallbackElement: <RouteFallback />,
     children: [
       { path: ROUTE_PATH.search, element: <SearchPage /> },
       {
