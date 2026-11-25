@@ -1,5 +1,5 @@
 export { searchBooks } from './api/searchBooks';
-export { getDisplayPrice, hasDiscount } from './lib/price';
+export { formatBookPrice, getDisplayPrice, hasDiscount } from './lib/price';
 export { uniqueBooks } from './lib/uniqueBooks';
 export {
   BOOK_PAGE_SIZE,
@@ -9,3 +9,5 @@ export {
   type BookSearchResult,
   type SearchTarget,
 } from './model';
+export { BookListItem } from './ui/BookListItem';
+export { BookListSkeleton } from './ui/BookListSkeleton';
