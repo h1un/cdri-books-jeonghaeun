@@ -1,5 +1,6 @@
 import { BookListSkeleton } from '@/entities/book';
 import { type SearchCondition, useBookSearch } from '@/features/search';
+import { MissingEnvError } from '@/shared/config/env';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { ErrorState } from '@/shared/ui/ErrorState';
 import { BookList } from '@/widgets/book-list/BookList';
@@ -7,13 +8,20 @@ import { BookList } from '@/widgets/book-list/BookList';
 import { SearchResultLayout } from './SearchResultLayout';
 
 const EMPTY_MESSAGE = '검색된 결과가 없습니다.';
+const ERROR_MESSAGE = '검색 결과를 불러오지 못했습니다.';
+
+/** 설정 문제(API 키 누락)는 원인을 그대로 보여주고, 그 밖의 오류는 공통 문구를 보여준다. */
+function getErrorMessage(error: Error) {
+  if (error instanceof MissingEnvError) return error.message;
+  return ERROR_MESSAGE;
+}
 
 type SearchResultProps = {
   condition: SearchCondition;
 };
 
 export function SearchResult({ condition }: SearchResultProps) {
-  const { data, status, refetch, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const { data, error, status, refetch, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useBookSearch(condition);
 
   if (condition.query === '') {
@@ -35,7 +43,7 @@ export function SearchResult({ condition }: SearchResultProps) {
   if (status === 'error') {
     return (
       <SearchResultLayout totalCount={0}>
-        <ErrorState message="검색 결과를 불러오지 못했습니다." onRetry={() => void refetch()} />
+        <ErrorState message={getErrorMessage(error)} onRetry={() => void refetch()} />
       </SearchResultLayout>
     );
   }
