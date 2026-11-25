@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react';
+import { type KeyboardEvent, useId, useRef, useState } from 'react';
 
 import { useDismiss } from '@/shared/hooks/useDismiss';
 import { cn } from '@/shared/lib/cn';
@@ -39,8 +39,15 @@ export function Select<T extends string>({
     setIsOpen(false);
   }
 
+  /** 옵션 목록이 열려 있을 때 ESC는 목록만 닫고, 셀렉트를 감싼 팝업까지 닫히지 않게 한다. */
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'Escape' || !isOpen) return;
+    event.preventDefault();
+    setIsOpen(false);
+  }
+
   return (
-    <div ref={containerRef} className={cn('relative', className)}>
+    <div ref={containerRef} onKeyDown={handleKeyDown} className={cn('relative', className)}>
       <button
         type="button"
         aria-label={label}
