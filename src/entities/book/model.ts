@@ -8,6 +8,9 @@ export type SearchTarget = keyof typeof SEARCH_TARGET;
 
 export const BOOK_PAGE_SIZE = 10;
 
+/** 카카오 책 검색 API가 허용하는 최대 페이지 */
+export const BOOK_MAX_PAGE = 50;
+
 /** 화면에서 사용하는 책 데이터. API 응답 형태(snake_case, -1 등)를 숨긴다. */
 export type Book = {
   id: string;
@@ -31,6 +34,7 @@ export type BookSearchParams = {
   target?: SearchTarget;
   page: number;
   size?: number;
+  signal?: AbortSignal;
 };
 
 export type BookSearchResult = {
