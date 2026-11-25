@@ -10,9 +10,11 @@ export async function searchBooks({
   target,
   page,
   size = BOOK_PAGE_SIZE,
+  signal,
 }: BookSearchParams): Promise<BookSearchResult> {
   const { data } = await kakaoClient.get<KakaoBookSearchResponse>('/v3/search/book', {
     params: { query, target, page, size },
+    signal,
   });
   return toBookSearchResult(data);
 }
