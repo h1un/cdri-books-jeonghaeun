@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { Book } from '@/entities/book';
 
-import { sortFavorites, toggleFavorite, type FavoritesById } from './favorites';
+import { migrateFavoritesV1, sortFavorites, toggleFavorite, type FavoritesById } from './favorites';
 
 function createBook(id: string): Book {
   return {
@@ -12,6 +12,7 @@ function createBook(id: string): Book {
     publisher: '출판사',
     contents: null,
     thumbnail: null,
+    coverImage: null,
     url: `https://example.com/${id}`,
     price: 10000,
     salePrice: 9000,
@@ -64,5 +65,21 @@ describe('sortFavorites', () => {
     favorites = toggleFavorite(favorites, createBook('mid'), 2);
 
     expect(sortFavorites(favorites).map((book) => book.id)).toEqual(['new', 'mid', 'old']);
+  });
+});
+
+describe('migrateFavoritesV1', () => {
+  it('coverImage가 없는 이전 데이터에 썸네일의 원본 이미지 주소를 채운다', () => {
+    const v1Book = {
+      ...createBook('a'),
+      thumbnail:
+        'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1',
+      coverImage: undefined,
+      savedAt: 1,
+    };
+
+    expect(migrateFavoritesV1({ a: v1Book }).a?.coverImage).toBe(
+      'https://t1.daumcdn.net/lbook/image/1',
+    );
   });
 });

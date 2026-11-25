@@ -1,4 +1,4 @@
-import type { Book } from '@/entities/book';
+import { type Book, toCoverImageUrl } from '@/entities/book';
 
 /** 찜한 시점의 책 데이터 스냅샷. (Figma: 찜한 시점의 데이터를 가지므로 API 결과와 다를 수 있음) */
 export type FavoriteBook = Book & {
@@ -32,4 +32,16 @@ export function toggleFavorite(
 /** 최근에 찜한 책이 먼저 오도록 정렬한다. */
 export function sortFavorites(favoritesById: FavoritesById): FavoriteBook[] {
   return Object.values(favoritesById).toSorted((a, b) => b.savedAt - a.savedAt);
+}
+
+type FavoriteBookV1 = Omit<FavoriteBook, 'coverImage'> & { coverImage?: string | null };
+
+/** v1에는 펼친 표지용 coverImage가 없어, 저장된 썸네일에서 원본 이미지 주소를 채운다. */
+export function migrateFavoritesV1(favoritesById: Record<string, FavoriteBookV1>): FavoritesById {
+  return Object.fromEntries(
+    Object.entries(favoritesById).map(([id, book]) => [
+      id,
+      { ...book, coverImage: book.coverImage ?? toCoverImageUrl(book.thumbnail) },
+    ]),
+  );
 }

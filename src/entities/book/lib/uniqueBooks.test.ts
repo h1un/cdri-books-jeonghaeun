@@ -12,6 +12,7 @@ function createBook(id: string, title = id): Book {
     publisher: '',
     contents: null,
     thumbnail: null,
+    coverImage: null,
     url: `https://example.com/${id}`,
     price: 10000,
     salePrice: null,

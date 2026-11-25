@@ -68,7 +68,13 @@ export function BookListItem({
         aria-label={book.title}
         className="flex border-b border-gray pt-6 pr-4 pb-[39px] pl-[54px]"
       >
-        <BookThumbnail src={book.thumbnail} alt={book.title} size="lg" overlay={coverOverlay} />
+        <BookThumbnail
+          src={book.coverImage}
+          fallbackSrc={book.thumbnail}
+          alt={book.title}
+          size="lg"
+          overlay={coverOverlay}
+        />
         <div className="ml-8 min-w-0 flex-1 pt-5">
           <h3 className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <span className="text-title3 font-bold">{book.title}</span>

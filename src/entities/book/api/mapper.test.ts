@@ -31,6 +31,7 @@ describe('toBook', () => {
       publisher: '민음사',
       contents: '무라카미 하루키의 대표작',
       thumbnail: 'https://search1.kakaocdn.net/thumb/1.jpg',
+      coverImage: 'https://search1.kakaocdn.net/thumb/1.jpg',
       url: 'https://search.daum.net/search?w=bookpage&bookId=1',
       price: 17000,
       salePrice: 15300,
@@ -63,6 +64,7 @@ describe('toBook', () => {
   it('빈 썸네일과 빈 책 소개는 null로 바꾼다', () => {
     const book = toBook(createDocument({ thumbnail: '', contents: '  ' }));
     expect(book.thumbnail).toBeNull();
+    expect(book.coverImage).toBeNull();
     expect(book.contents).toBeNull();
   });
 });

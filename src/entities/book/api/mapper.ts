@@ -1,3 +1,5 @@
+import { toCoverImageUrl } from '../lib/coverImage';
+
 import type { Book, BookSearchResult } from '../model';
 import type { KakaoBookDocument, KakaoBookSearchResponse } from './kakaoBook.dto';
 
@@ -17,13 +19,16 @@ function toNonEmptyString(value: string) {
 }
 
 export function toBook(document: KakaoBookDocument): Book {
+  const thumbnail = toNonEmptyString(document.thumbnail);
+
   return {
     id: toBookId(document),
     title: document.title,
     authors: document.authors,
     publisher: document.publisher,
     contents: toNonEmptyString(document.contents),
-    thumbnail: toNonEmptyString(document.thumbnail),
+    thumbnail,
+    coverImage: toCoverImageUrl(thumbnail),
     url: document.url,
     price: toPositivePrice(document.price),
     salePrice: toPositivePrice(document.sale_price),

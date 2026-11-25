@@ -19,8 +19,10 @@ export type Book = {
   publisher: string;
   /** 책 소개. API가 빈 문자열을 주면 null */
   contents: string | null;
-  /** 썸네일 URL. 없으면 null */
+  /** 목록용 작은 썸네일(120×174) URL. 없으면 null */
   thumbnail: string | null;
+  /** 펼친 표지용 원본 이미지 URL. 원본을 알 수 없으면 썸네일과 같고, 없으면 null */
+  coverImage: string | null;
   /** 책 상세페이지(다음 책) URL */
   url: string;
   /** 정가. 0 이하(가격 정보 없음)면 null */

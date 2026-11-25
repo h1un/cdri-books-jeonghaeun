@@ -10,29 +10,42 @@ const THUMBNAIL_SIZE = {
 
 type BookThumbnailProps = {
   src: string | null;
+  /** src를 불러오지 못했을 때 시도할 이미지 (펼친 표지: 원본 → 썸네일) */
+  fallbackSrc?: string | null;
   alt: string;
   size: keyof typeof THUMBNAIL_SIZE;
   /** 표지 위 오른쪽 상단에 겹쳐 놓을 요소 (찜 하트 등) */
   overlay?: ReactNode;
 };
 
-/** 크기를 고정해 이미지 로딩 전후로 레이아웃이 밀리지 않게 하고, 이미지가 없거나 깨지면 대체 이미지를 보여준다. */
-export function BookThumbnail({ src, alt, size, overlay }: BookThumbnailProps) {
-  const [hasError, setHasError] = useState(false);
+/**
+ * 크기를 고정해 이미지 로딩 전후로 레이아웃이 밀리지 않게 한다.
+ * 이미지를 불러오지 못하면 fallbackSrc를, 그것도 없으면 대체 일러스트를 보여준다.
+ */
+export function BookThumbnail({ src, fallbackSrc = null, alt, size, overlay }: BookThumbnailProps) {
+  const [failedSources, setFailedSources] = useState<ReadonlySet<string>>(() => new Set());
   const { width, height, fallbackIcon } = THUMBNAIL_SIZE[size];
-  const isImageAvailable = src !== null && !hasError;
+  const imageSource = [src, fallbackSrc].find(
+    (source): source is string => source !== null && !failedSources.has(source),
+  );
+  const isImageAvailable = imageSource !== undefined;
+
+  function handleError(failedSource: string) {
+    setFailedSources((previous) => new Set(previous).add(failedSource));
+  }
 
   return (
     <div className="relative shrink-0 bg-light-gray" style={{ width, height }}>
       {isImageAvailable && (
         <img
-          src={src}
+          key={imageSource}
+          src={imageSource}
           alt={alt}
           width={width}
           height={height}
           loading="lazy"
           decoding="async"
-          onError={() => setHasError(true)}
+          onError={() => handleError(imageSource)}
           className="size-full object-cover"
         />
       )}
