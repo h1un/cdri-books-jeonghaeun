@@ -43,7 +43,7 @@ cp .env.example .env
 VITE_KAKAO_REST_API_KEY=발급받은_REST_API_키
 ```
 
-`.env`는 `.gitignore`에 포함되어 저장소에 올라가지 않습니다. 키가 없으면 앱 시작 시 원인과 해결 방법이 담긴 에러가 콘솔에 출력됩니다.
+`.env`는 `.gitignore`에 포함되어 저장소에 올라가지 않습니다. 키가 없으면 검색할 때 결과 영역에 원인과 해결 방법이 표시됩니다. (API와 무관한 단위 테스트는 키 없이 통과합니다.)
 
 ### 실행
 
@@ -60,7 +60,7 @@ pnpm dev        # http://localhost:5173
 | `pnpm lint` / `pnpm typecheck` | ESLint / TypeScript 검사                    |
 | `pnpm format`                  | Prettier                                    |
 
-커밋할 때 husky가 변경 파일의 ESLint·Prettier와 커밋 메시지 형식을 검사합니다.
+커밋할 때 husky가 변경 파일의 ESLint·Prettier와 커밋 메시지 형식을 검사하고, PR마다 GitHub Actions가 `.env` 없이 typecheck·lint·test·build를 실행합니다.
 
 <br />
 
