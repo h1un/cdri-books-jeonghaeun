@@ -17,6 +17,7 @@ export function FavoriteBookList({ books }: FavoriteBookListProps) {
       books={visibleItems}
       hasNextPage={hasNextPage}
       isFetchingNextPage={false}
+      isLoadMoreError={false}
       onLoadMore={loadMore}
     />
   );

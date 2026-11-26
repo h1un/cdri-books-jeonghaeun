@@ -21,8 +21,16 @@ type SearchResultProps = {
 };
 
 export function SearchResult({ condition }: SearchResultProps) {
-  const { data, error, status, refetch, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useBookSearch(condition);
+  const {
+    data,
+    error,
+    status,
+    refetch,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetchNextPageError,
+    fetchNextPage,
+  } = useBookSearch(condition);
 
   if (condition.query === '') {
     return (
@@ -40,7 +48,8 @@ export function SearchResult({ condition }: SearchResultProps) {
     );
   }
 
-  if (status === 'error') {
+  // 다음 페이지만 실패했다면 status는 'error'여도 데이터가 남아 있으므로 목록을 유지한다. (목록 끝에서 재시도)
+  if (data === undefined) {
     return (
       <SearchResultLayout totalCount={0}>
         <ErrorState message={getErrorMessage(error)} onRetry={() => void refetch()} />
@@ -62,6 +71,7 @@ export function SearchResult({ condition }: SearchResultProps) {
         books={data.books}
         hasNextPage={hasNextPage}
         isFetchingNextPage={isFetchingNextPage}
+        isLoadMoreError={isFetchNextPageError}
         onLoadMore={() => void fetchNextPage()}
       />
     </SearchResultLayout>

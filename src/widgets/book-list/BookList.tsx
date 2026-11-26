@@ -6,6 +6,7 @@ import { useDocumentOffsetTop } from '@/shared/hooks/useDocumentOffsetTop';
 
 import { BookListRow } from './BookListRow';
 import { LoadingMore } from './LoadingMore';
+import { LoadMoreError } from './LoadMoreError';
 import { useExpandedIds } from './useExpandedIds';
 
 /** 접힌 아이템 높이. 펼친 아이템은 measureElement로 실제 높이를 잰다. */
@@ -18,6 +19,8 @@ type BookListProps = {
   books: readonly FavoriteCandidate[];
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
+  /** 다음 페이지 요청이 실패한 상태. 이때는 자동으로 다시 요청하지 않고 재시도 버튼을 보여준다. */
+  isLoadMoreError: boolean;
   onLoadMore: () => void;
 };
 
@@ -27,7 +30,13 @@ type BookListProps = {
  * - 펼침 상태는 목록이 들고 있어, 스크롤로 아이템이 언마운트됐다 돌아와도 유지된다.
  * - 마지막 아이템 근처가 화면에 보이면 다음 페이지를 요청한다.
  */
-export function BookList({ books, hasNextPage, isFetchingNextPage, onLoadMore }: BookListProps) {
+export function BookList({
+  books,
+  hasNextPage,
+  isFetchingNextPage,
+  isLoadMoreError,
+  onLoadMore,
+}: BookListProps) {
   const listRef = useRef<HTMLUListElement>(null);
   const scrollMargin = useDocumentOffsetTop(listRef);
   const { expandedIds, toggleExpanded } = useExpandedIds();
@@ -48,8 +57,9 @@ export function BookList({ books, hasNextPage, isFetchingNextPage, onLoadMore }:
   const loadMore = useEffectEvent(onLoadMore);
 
   useEffect(() => {
-    if (isNearEnd && hasNextPage && !isFetchingNextPage) loadMore();
-  }, [isNearEnd, hasNextPage, isFetchingNextPage]);
+    // 실패 직후 isFetchingNextPage가 false로 바뀌어도 다시 요청하지 않는다. (실패가 반복되면 요청이 끝없이 이어짐)
+    if (isNearEnd && hasNextPage && !isFetchingNextPage && !isLoadMoreError) loadMore();
+  }, [isNearEnd, hasNextPage, isFetchingNextPage, isLoadMoreError]);
 
   return (
     <>
@@ -83,6 +93,7 @@ export function BookList({ books, hasNextPage, isFetchingNextPage, onLoadMore }:
         })}
       </ul>
       {isFetchingNextPage && <LoadingMore />}
+      {!isFetchingNextPage && isLoadMoreError && <LoadMoreError onRetry={onLoadMore} />}
     </>
   );
 }
