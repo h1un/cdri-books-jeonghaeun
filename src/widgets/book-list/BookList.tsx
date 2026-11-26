@@ -55,11 +55,14 @@ export function BookList({
   const isNearEnd = lastVisibleIndex >= books.length - PREFETCH_OFFSET;
 
   const loadMore = useEffectEvent(onLoadMore);
+  const itemCount = books.length;
 
   useEffect(() => {
     // 실패 직후 isFetchingNextPage가 false로 바뀌어도 다시 요청하지 않는다. (실패가 반복되면 요청이 끝없이 이어짐)
     if (isNearEnd && hasNextPage && !isFetchingNextPage && !isLoadMoreError) loadMore();
-  }, [isNearEnd, hasNextPage, isFetchingNextPage, isLoadMoreError]);
+    // 목록이 늘어난 뒤에도 끝이 화면에 보이면(긴 화면) isNearEnd가 그대로 true라, 개수가 바뀔 때도 다시 판단한다.
+    // 찜 목록처럼 isFetchingNextPage가 항상 false인 목록은 이 값이 없으면 더 불러오지 않고 멈춘다.
+  }, [itemCount, isNearEnd, hasNextPage, isFetchingNextPage, isLoadMoreError]);
 
   return (
     <>
