@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router';
 
-import { ROUTE_PATH } from '@/app/routePath';
+import { ROUTE_PATH } from '@/shared/config/routePath';
 import { cn } from '@/shared/lib/cn';
 
 const NAV_ITEMS = [

@@ -2,8 +2,8 @@ import { createBrowserRouter } from 'react-router';
 
 import { Layout } from '@/app/Layout';
 import { RouteFallback } from '@/app/RouteFallback';
-import { ROUTE_PATH } from '@/app/routePath';
 import { SearchPage } from '@/pages/SearchPage';
+import { ROUTE_PATH } from '@/shared/config/routePath';
 
 export const router = createBrowserRouter([
   {
