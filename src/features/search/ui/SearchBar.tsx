@@ -66,7 +66,8 @@ export function SearchBar({ defaultQuery, onSearch }: SearchBarProps) {
           <SearchIcon size={30} className="shrink-0 text-text-primary" />
           <input
             ref={inputRef}
-            type="search"
+            // type="search"는 ESC를 누르면 입력값을 비우는 기본 동작이 있어, 기록 목록을 닫으려던 입력까지 지워진다.
+            type="text"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             onFocus={() => setIsHistoryOpen(true)}
@@ -74,7 +75,7 @@ export function SearchBar({ defaultQuery, onSearch }: SearchBarProps) {
             placeholder="검색어를 입력하세요"
             aria-label="도서 검색어"
             enterKeyHint="search"
-            className="h-full min-w-0 flex-1 bg-transparent text-caption font-medium text-text-primary outline-none placeholder:text-text-subtitle [&::-webkit-search-cancel-button]:hidden"
+            className="h-full min-w-0 flex-1 bg-transparent text-caption font-medium text-text-primary outline-none placeholder:text-text-subtitle"
           />
         </div>
         {isHistoryVisible && (
