@@ -8,7 +8,9 @@ type SearchHistoryListProps = {
 
 export function SearchHistoryList({ histories, onSelect, onRemove }: SearchHistoryListProps) {
   return (
-    <ul aria-label="최근 검색어" className="pb-4">
+    // Safari·macOS Firefox는 버튼을 클릭해도 포커스를 주지 않아, 검색창이 먼저 blur되며 목록이 닫히고
+    // click이 사라진다. mousedown 기본 동작을 막아 클릭하는 동안 검색창 포커스를 유지한다.
+    <ul aria-label="최근 검색어" onMouseDown={(event) => event.preventDefault()} className="pb-4">
       {histories.map((history) => (
         <li key={history} className="flex h-10 items-center gap-4 pr-6 pl-[51px]">
           <button
