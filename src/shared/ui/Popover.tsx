@@ -1,4 +1,4 @@
-import { type ReactNode, useRef } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 
 import { useDismiss } from '@/shared/hooks/useDismiss';
 import { cn } from '@/shared/lib/cn';
@@ -6,7 +6,10 @@ import { cn } from '@/shared/lib/cn';
 import { CloseIcon } from './icons/icons';
 
 type PopoverProps = {
-  /** 팝업을 여는 버튼. 트리거도 바깥 클릭 판정에서 제외되도록 Popover 안에 함께 둔다. */
+  /**
+   * 팝업을 여는 버튼. 트리거도 바깥 클릭 판정에서 제외되도록 Popover 안에 함께 둔다.
+   * 닫힐 때 포커스를 돌려받으므로 포커스 가능한 요소 하나여야 한다.
+   */
   trigger: ReactNode;
   isOpen: boolean;
   onClose: () => void;
@@ -23,6 +26,17 @@ type PopoverProps = {
 export function Popover({ trigger, isOpen, onClose, label, className, children }: PopoverProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   useDismiss(containerRef, onClose, isOpen);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const container = containerRef.current;
+    return () => {
+      // 팝업 안에 있던 포커스는 팝업과 함께 사라져 body로 간다. 키보드 사용자가 제자리를 잃지 않게 트리거로 돌려준다.
+      if (document.activeElement !== document.body) return;
+      const trigger = container?.firstElementChild;
+      if (trigger instanceof HTMLElement) trigger.focus();
+    };
+  }, [isOpen]);
 
   return (
     <div ref={containerRef} className="relative">

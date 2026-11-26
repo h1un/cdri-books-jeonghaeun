@@ -33,11 +33,12 @@ export function BookListItem({
   const detailId = useId();
   const authorText = book.authors.join(', ');
 
-  const detailToggle = (
+  /** 상세 영역은 펼쳤을 때만 존재하므로, 그때만 aria-controls로 가리킨다. */
+  const renderDetailToggle = (controlsId?: string) => (
     <Button
       variant="gray"
       aria-expanded={isExpanded}
-      aria-controls={detailId}
+      aria-controls={controlsId}
       onClick={() => onToggleExpand(book.id)}
       className="w-[115px]"
     >
@@ -64,7 +65,6 @@ export function BookListItem({
   if (isExpanded) {
     return (
       <article
-        id={detailId}
         aria-label={book.title}
         className="flex border-b border-gray pt-6 pr-4 pb-[39px] pl-[54px]"
       >
@@ -75,7 +75,7 @@ export function BookListItem({
           size="lg"
           overlay={coverOverlay}
         />
-        <div className="ml-8 min-w-0 flex-1 pt-5">
+        <div id={detailId} className="ml-8 min-w-0 flex-1 pt-5">
           <h3 className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <span className="text-title3 font-bold">{book.title}</span>
             <span className="shrink-0 text-body2 text-text-secondary">{authorText}</span>
@@ -86,7 +86,7 @@ export function BookListItem({
           </p>
         </div>
         <div className="ml-12 flex w-[240px] shrink-0 flex-col items-end justify-between">
-          {detailToggle}
+          {renderDetailToggle(detailId)}
           <div className="flex w-full flex-col items-end gap-7">
             <BookPrice book={book} />
             {purchaseLink}
@@ -111,7 +111,7 @@ export function BookListItem({
       </p>
       <div className="flex shrink-0 gap-2">
         {purchaseLink}
-        {detailToggle}
+        {renderDetailToggle()}
       </div>
     </article>
   );
